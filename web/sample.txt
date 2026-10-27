@@ -1,0 +1,2 @@
+This is a public Autopilot verification example.
+Its receipt is self-signed, so it demonstrates integrity rather than a trusted identity.

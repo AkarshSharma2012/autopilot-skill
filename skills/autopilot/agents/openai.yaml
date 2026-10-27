@@ -1,0 +1,6 @@
+interface:
+  display_name: "Autopilot"
+  short_description: "Adapt, execute, and verify across agent environments"
+  default_prompt: "Use $autopilot to adapt to this project and complete the task with verified results."
+policy:
+  allow_implicit_invocation: true

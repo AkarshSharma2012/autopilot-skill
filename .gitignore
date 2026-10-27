@@ -1,0 +1,11 @@
+.autopilot/
+node_modules/
+dist/
+*.private.pem
+*.key
+*.env
+.env*
+!*.example
+*.tar.gz
+*.zip
+.DS_Store

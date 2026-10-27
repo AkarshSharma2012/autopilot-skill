@@ -1,0 +1,11 @@
+import { cp, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root=fileURLToPath(new URL('../',import.meta.url));
+await mkdir(resolve(root,'dist'),{recursive:true});
+await cp(resolve(root,'web'),resolve(root,'dist'),{recursive:true});
+await cp(resolve(root,'skills/autopilot/scripts/lib/protocol.mjs'),resolve(root,'dist/protocol.mjs'));
+const page=await readFile(resolve(root,'dist/index.html'),'utf8');
+if(!page.includes('Autopilot')||!page.includes('app.mjs')) throw Error('Incomplete site');
+await writeFile(resolve(root,'dist/.nojekyll'),'');
+console.log('Static verifier built in dist/');

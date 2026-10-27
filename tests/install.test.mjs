@@ -1,0 +1,22 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,readFile,writeFile,readdir,mkdir} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join,resolve} from 'node:path';
+import {execFileSync} from 'node:child_process';
+const installer=resolve('scripts/install.mjs');
+test('installer copies complete skill, refuses clobber, and backs up replacement',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'autopilot-install-')),target=join(root,'autopilot');
+  const out=execFileSync(process.execPath,[installer,'--target',target],{encoding:'utf8'});
+  assert.ok(out.includes('Research: /autopilot research max'));
+  assert.ok((await readFile(join(target,'references','setup.md'),'utf8')).includes('onboarding'));
+  assert.ok((await readFile(join(target,'scripts','lib','protocol.mjs'),'utf8')).includes('PROTOCOL'));
+  await writeFile(join(target,'my-note.txt'),'preserve');
+  assert.throws(()=>execFileSync(process.execPath,[installer,'--target',target],{stdio:'pipe'}));
+  const replaced=execFileSync(process.execPath,[installer,'--target',target,'--replace','--backup-dir',join(root,'backups')],{encoding:'utf8'});
+  const backup=replaced.split('\n').find(x=>x.startsWith('Previous skill backed up outside skill discovery: ')).split(': ').slice(1).join(': ').trim();
+  assert.equal(await readFile(join(backup,'my-note.txt'),'utf8'),'preserve');
+  assert.equal((await readdir(root)).filter(x=>x.startsWith('autopilot.backup-')).length,0);
+  assert.ok(!(await readdir(target)).includes('my-note.txt'));
+});
+test('installer rejects missing target argument',()=>{assert.throws(()=>execFileSync(process.execPath,[installer,'--target'],{stdio:'pipe'}));});

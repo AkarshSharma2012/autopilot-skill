@@ -1,0 +1,15 @@
+{
+  "payload": {
+    "protocol": "autopilot-receipt/v1",
+    "algorithm": "Ed25519",
+    "claim": "Created with the Autopilot workflow",
+    "id": "23efdf28-d231-47cc-bc9a-603b30f440df",
+    "createdAt": "2026-10-27T02:46:55.892Z",
+    "kind": "file",
+    "name": "sample.txt",
+    "normalization": "exact-bytes-v1",
+    "digest": "46269dd5a59bb05177bdb05bf323ddb8ae3a67669525a3c5cb773dafd1ae4d9f"
+  },
+  "publicKey": "MCowBQYDK2VwAyEAiEzWUSDSCpfwhwhR7xHJ5/XVESocXSFEP8OMxRVLVrk=",
+  "signature": "ABft7rN5eTY0C+TodNPfKzTEYNecTJRjivwpOmFR9+7eCwrsHjZEu5aJ3M1D+ccaMY1U48bTcEY7obU2uIkrDQ=="
+}
