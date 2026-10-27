@@ -4,7 +4,7 @@
 
 A portable skill that adapts to a project's stack and the host's available skills, plugins, tools, and permissions. It plans, executes, researches, and verifies outcomes. First use inventories the environment and explains the selected setup. Optional signed receipts travel with deliverables.
 
-[Open the verifier](https://autopilot-receipt-desk.creamgrape2051.chatgpt.site) · [Installation](INSTALL.md) · [Provenance contract](docs/PROVENANCE.md) · [Security](SECURITY.md)
+[Open the verifier](https://akarshsharma2012.github.io/autopilot-skill/) · [Installation](INSTALL.md) · [Provenance contract](docs/PROVENANCE.md) · [Security](SECURITY.md)
 
 ## Tell your agent to install it
 

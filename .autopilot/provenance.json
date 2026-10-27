@@ -3,8 +3,8 @@
     "protocol": "autopilot-receipt/v1",
     "algorithm": "Ed25519",
     "claim": "Created with the Autopilot workflow",
-    "id": "ee9822f8-86af-42c9-bc7d-e3e9be8d8290",
-    "createdAt": "2026-10-27T02:58:45.846Z",
+    "id": "50250f89-c984-404c-9e58-59bda75abdb9",
+    "createdAt": "2026-10-27T03:01:45.705Z",
     "kind": "repo",
     "files": [
       {
@@ -49,8 +49,8 @@
       },
       {
         "path": "README.md",
-        "size": 5230,
-        "sha256": "e75f256c246b42fb465661d6776e1cc6e112b4f93de6edfd66b8b7a225af7738"
+        "size": 5223,
+        "sha256": "b23254168756245db8d6ca574ed76d0867d1be5f30c1567180e86f7ac1d2574f"
       },
       {
         "path": "SECURITY.md",
@@ -183,8 +183,8 @@
         "sha256": "4593d232db39152eae831f3396795d62edadf8b398793ef4696afc7c072dec38"
       }
     ],
-    "digest": "111a824b8a6dbd5421e86fd77f0f66d32c136262f31d0c65bc6ffb17f21b9375"
+    "digest": "7e9a754c5ddd4dfd67c6bfc6d7446c9ed231af1ad95d127c599cd06de1b78f3a"
   },
   "publicKey": "MCowBQYDK2VwAyEAQd1NSNFo02jUCekQMBvcBETzVcE/1c0hj1LYVHoEgvg=",
-  "signature": "WIpOSj6djpQXZk/xrueX5aO0UPRau4ORbucZY4/xBH3tPjzt8No22FKe65RVU2+YTHJOhx80S3Tchh7/50eKDg=="
+  "signature": "CK+VjYiAt7o4sAyr9jFscRDBIdsWxpUdKqx2UGxNL+27z7iFXHoGZ7ET1dSikdzajkDqM3+QphOmdPVIUtvNCA=="
 }
