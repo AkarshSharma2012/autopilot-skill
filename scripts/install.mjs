@@ -33,6 +33,6 @@ async function run() {
   if(existing)await rename(target,backup);
   try {await rename(staging,target);} catch(error){if(existing)await rename(backup,target);throw error;}
   if(backup)console.log('Previous skill backed up outside skill discovery: '+backup);
-  console.log('Installed: '+target+'\nRestart the agent if its skill list is cached.\nFirst use: /autopilot <your goal> or “Use Autopilot to <your goal>”.\nResearch: /autopilot research max <question and requested output>.\nFirst run discovers your stack and tools, saves local context, and explains the selected setup.\nHelp: node "'+join(target,'scripts','autopilot.mjs')+'" help\nNo plugins, account connections, or paid services were installed.');
+  console.log('Installed: '+target+'\nRestart the agent if its skill list is cached.\nFirst use: /autopilot <your goal> or “Use Autopilot to <your goal>”.\nResearch: /autopilot research max <question and requested output>.\nYour own commands: /autopilot makecommand <purpose> (project-local; native slash support is host-dependent).\nRobotics: /autopilot frc <request> (separately installed FRCstack required).\nFirst run discovers your stack and tools, saves local context, and explains the selected setup.\nHelp: node "'+join(target,'scripts','autopilot.mjs')+'" help\nNo plugins, account connections, or paid services were installed.');
 }
 run().catch(e=>{console.error(e.message);process.exitCode=1;});

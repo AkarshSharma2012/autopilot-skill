@@ -17,10 +17,16 @@ The agent should inspect the source before running the installer. No account con
 ```text
 /autopilot build and test this feature
 /autopilot research max compare current options and make an Excel workbook
+/autopilot makecommand research robotics mechanisms and produce a sourced comparison
+/autopilot frc scout <competition link/name>
 /autopilot help
 ```
 
 For hosts without slash commands: **Use Autopilot to ...**
+
+`makecommand` creates a reusable project-local definition and explains its chosen name, for example `/autopilot frc-research <inputs>`. It does not execute the task or universally register a native slash command. Existing definitions are not overwritten. [Command persistence and CLI usage](skills/autopilot/references/commands.md).
+
+`/autopilot frc` uses the separately installed [FRCstack skill](https://github.com/AkarshSharma2012/FRCstack-skill) for Onshape CAD, evidence-backed scouting Excel exports, robot reconstruction, reviews and BOMs. FRCstack works without Autopilot too. Neither package installs a live tracker or Onshape connection, and video cannot guarantee an exact replica of hidden robot geometry.
 
 First-run setup detects stack indicators, inventories observed tools, selects fallbacks, saves a local profile, and gives an onboarding guide. It does not change the user's stack, install every plugin, or claim disconnected tools work. Existing project instructions, host permissions, and user choices take priority. Profiles are refreshed when relevant inputs change.
 

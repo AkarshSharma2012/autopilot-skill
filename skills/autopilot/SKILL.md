@@ -1,6 +1,6 @@
 ---
 name: autopilot
-description: Adapt multi-step work to the user's stack, installed skills, plugins, tools, and permissions. Own planning, execution, research, verification, and signed output receipts. Supports /autopilot research with low, medium, high, or max effort.
+description: Adapt multi-step work to the user's stack and available tools. Own planning, execution, research, verification, and output receipts. Supports research effort levels, reusable makecommand workflows, and optional FRCstack routing through /autopilot frc.
 ---
 
 # Autopilot
@@ -13,7 +13,7 @@ Before the first task in a project, read [setup](references/setup.md). Detect th
 
 On later runs reuse that profile; refresh when manifests, instructions, available tools, or requested scope change. A tool listed in a config is configured, not proven connected. Mark each useful capability available, unavailable, untested, or authorization-required from evidence.
 
-After first-run setup, give a short guide: the detected stack, selected tools and fallbacks, invocation syntax supported by this host, a normal task example, a research example, how receipts work, and any unavailable feature. Show this guide again for `/autopilot help` or “Autopilot help.” Do not require the user to read implementation files to begin.
+After first-run setup, give a short guide: the detected stack, selected tools and fallbacks, invocation syntax supported by this host, a normal task example, a research example, `/autopilot makecommand <purpose>` to create reusable commands, `/autopilot frc <request>` when FRCstack is installed, how receipts work, and any unavailable feature. Show this guide again for `/autopilot help` or “Autopilot help.” Do not require the user to read implementation files to begin.
 
 No framework, provider, plugin, subagent service, or paid API is mandatory. Prefer native capabilities and existing project conventions. Load specialist skills only when relevant and available. Without them, perform the workflow directly and disclose any limitation. Never claim universal compatibility: adapt to exposed capabilities and explain unsupported operations.
 
@@ -29,6 +29,12 @@ No framework, provider, plugin, subagent service, or paid API is mandatory. Pref
 8. Report the result, evidence, and actual remaining work. Tool success alone is not completion.
 
 Answers and reviews do not authorize external writes. Diagnose before fixing unless the user requested a fix. Use supported wait/scheduling tools for monitoring. Preserve the host's instruction hierarchy and permissions; this skill cannot grant access or override them.
+
+## Reusable commands and FRCstack
+
+For `/autopilot makecommand <purpose>` and custom command invocation, read [commands](references/commands.md). Create a readable project-local definition, explain its chosen name/usage, and do not execute it merely because it was created. Built-ins take precedence; custom names cannot replace them. Do not imply universal native slash registration.
+
+For `/autopilot frc <request>`, locate and read the installed `frcstack` skill, then apply its CAD/scouting workflow. Autopilot remains the orchestration owner; FRCstack must not route back here. If absent, disclose the missing skill and its repository: https://github.com/AkarshSharma2012/FRCstack-skill. It is optional, not an automatically installed dependency. Installing instructions does not connect Onshape, video capture, inference, or results APIs. Use available tools and verify the actual requested output.
 
 ## Research command
 

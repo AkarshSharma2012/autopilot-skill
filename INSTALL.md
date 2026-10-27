@@ -28,6 +28,10 @@ Setup ends with a compact guide covering the detected stack, usable tools, missi
 
 Research efforts are `low`, `medium`, `high`, and `max`. Example: `/autopilot research max compare current providers and create a spreadsheet`. These control workflow depth, not the model's own reasoning setting or subscription limit.
 
+Make your own reusable workflows with `/autopilot makecommand <what it does and what it is for>`. The agent chooses/explains a safe name and saves a private project-local definition, then shows `/autopilot <name> <inputs>` and the plain-language fallback. Creation does not execute the command or register native host commands universally. Definitions are not silently overwritten; see [commands](skills/autopilot/references/commands.md).
+
+For robotics, independently install [FRCstack](https://github.com/AkarshSharma2012/FRCstack-skill), then use `/autopilot frc <request>`. This routes the domain workflow with one orchestration owner, not a loop between skills. Actual CAD/video/API access still needs to be available and tested.
+
 ## Updating and removing
 
 Review changes, pull the repository, then rerun the installer with `--replace`. The backup can be restored by copying it back after stopping the host. To uninstall, remove only the installed skill folder; no hooks, services, scheduled jobs, accounts, or global instruction files were modified. Keep any signing identity if you still need to sign updates or verify its fingerprint. Public receipts and public keys remain independently verifiable.

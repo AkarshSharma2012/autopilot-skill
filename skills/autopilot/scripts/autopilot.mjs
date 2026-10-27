@@ -7,6 +7,7 @@ import { execFileSync } from 'node:child_process';
 import { generateKeyPairSync, sign, createPublicKey, randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { PROTOCOL, MAX_BYTES, canonical, sha256, base64, fingerprint, verifyReceipt, isPng, stripPngReceipt, embedPngReceipt, safePath, isRepoEligible } from './lib/protocol.mjs';
+import { createCommand, readCommand, frcRoute } from './lib/commands.mjs';
 
 const MANIFESTS=['package.json','package-lock.json','pnpm-lock.yaml','yarn.lock','bun.lock','pyproject.toml','requirements.txt','setup.py','uv.lock','poetry.lock','Cargo.toml','Cargo.lock','go.mod','go.sum','pom.xml','build.gradle','composer.json','composer.lock','Gemfile','Gemfile.lock','pubspec.yaml','pubspec.lock','global.json','CMakeLists.txt','Makefile','Package.swift','default.project.json','wally.toml','AGENTS.md','CLAUDE.md'];
 export async function setup(project) {
@@ -36,7 +37,7 @@ export async function setup(project) {
   const detection={manifests:files,stacks:[...new Set(stacks)],packages,testScripts};
   const profile={schema:1,...detection,environmentFingerprint:await sha256(canonical(detection)),capabilities:old?.capabilities||[],provenance:'detached-receipts',notes:'Agent must supplement with observed host tools. No configuration implies live connectivity.'};
   if(!old||canonical(old)!==canonical(profile)) await writeFile(profilePath,JSON.stringify(profile,null,2)+'\n',{flag:'w',mode:0o600});
-  return {profile:profilePath,changed:!old||old.environmentFingerprint!==profile.environmentFingerprint,stacks:profile.stacks,guide:['Use /autopilot <goal>, or say: Use Autopilot to <goal>.','Research: /autopilot research max <question and deliverable>.','Your agent must inventory its exposed tools and explain selected capabilities.','Run the CLI help command or ask Autopilot help for usage and receipts.']};
+  return {profile:profilePath,changed:!old||old.environmentFingerprint!==profile.environmentFingerprint,stacks:profile.stacks,guide:['Use /autopilot <goal>, or say: Use Autopilot to <goal>.','Research: /autopilot research max <question and deliverable>.','Create a reusable command: /autopilot makecommand <purpose>.','Robotics: /autopilot frc <request> (requires separately installed FRCstack).','Your agent must inventory its exposed tools and explain selected capabilities.','Run the CLI help command or ask Autopilot help for usage and receipts.']};
 }
 async function safeDirectory(path) {
   const full=resolve(path); let current=full;
@@ -120,14 +121,20 @@ export async function verifyFile(file,receiptPath,trustPath) {
 }
 export async function main(argv=process.argv.slice(2)) {
   const [command,...args]=argv,opts={};
+  const commandOptions={makecommand:['project','name','purpose'],run:['project','name'],frc:['skill-root']};
   for(let i=0;i<args.length;i++) {
     if(!args[i].startsWith('--')) throw Error('Expected --option');
-    const k=args[i].slice(2); if(k==='embed-png') opts[k]=true;
+    const k=args[i].slice(2);
+    if(commandOptions[command]&&(!commandOptions[command].includes(k)||Object.hasOwn(opts,k)))throw Error('Unknown or duplicate option: --'+k);
+    if(k==='embed-png') opts[k]=true;
     else { if(!args[i+1]||args[i+1].startsWith('--')) throw Error('Missing value for --'+k); opts[k]=args[++i]; }
   }
   let result;
-  if(command==='help') result={usage:['/autopilot <goal>','/autopilot research low|medium|high|max <question>','Use Autopilot to <goal> (hosts without slash commands)'],firstRun:'Your agent discovers the stack and actual tools, saves a local profile, and explains its selected setup.',cli:['setup --project <folder>','key [--identity <private-folder>]','seal --file <artifact> [--embed-png] [--output <receipt>]','verify --file <artifact> [--receipt <receipt>] [--trust <public.pem>]','seal-repo --project <git-repo> [--output <receipt>]','verify-repo --project <git-repo> [--receipt <receipt>] [--trust <public.pem>]','badge --receipt <receipt> --output <badge.svg>'],limits:'Skills use capabilities exposed by the host. A signature proves matching bytes and a declaration, not how content was generated. No private files are uploaded.'};
+  if(command==='help') result={usage:['/autopilot <goal>','/autopilot research low|medium|high|max <question>','/autopilot makecommand <purpose>','/autopilot <custom-command> <inputs>','/autopilot frc <request>','Use Autopilot to <goal> (hosts without slash commands)'],firstRun:'Your agent discovers the stack and actual tools, saves a local profile, and explains its selected setup.',cli:['setup --project <folder>','makecommand --project <folder> --name <safe-name> --purpose <text>','run --project <folder> --name <command> (read definition; does not execute)','frc [--skill-root <skills-folder>] (locate domain skill; not CAD execution)','key [--identity <private-folder>]','seal --file <artifact> [--embed-png] [--output <receipt>]','verify --file <artifact> [--receipt <receipt>] [--trust <public.pem>]','seal-repo --project <git-repo> [--output <receipt>]','verify-repo --project <git-repo> [--receipt <receipt>] [--trust <public.pem>]','badge --receipt <receipt> --output <badge.svg>'],limits:'Skills use capabilities exposed by the host. Native slash registration is host-specific. A signature proves matching bytes and a declaration, not how content was generated. No private files are uploaded.'};
   else if(command==='setup') result=await setup(resolve(opts.project||'.'));
+  else if(command==='makecommand') result=await createCommand(resolve(opts.project||'.'),opts.name,opts.purpose);
+  else if(command==='run') result=await readCommand(resolve(opts.project||'.'),opts.name);
+  else if(command==='frc') result=await frcRoute(opts['skill-root']);
   else if(command==='key') { const id=await identity(opts.identity); result={publicKey:id.publicPath,fingerprint:await fingerprint(id.publicKey)}; }
   else if(command==='seal') { if(!opts.file) throw Error('--file is required'); result=await seal(resolve(opts.file),{identity:opts.identity,output:opts.output,embedPng:opts['embed-png']}); }
   else if(command==='seal-repo') result=await sealRepository(resolve(opts.project||'.'),opts);
@@ -142,7 +149,7 @@ export async function main(argv=process.argv.slice(2)) {
     const marker='AP1:'+receipt.payload.id;
     await writeNew(opts.output||'autopilot-badge.svg',`<svg xmlns="http://www.w3.org/2000/svg" width="440" height="72" role="img" aria-label="Autopilot attribution; receipt required"><rect width="440" height="72" rx="12" fill="#153e63"/><text x="18" y="28" fill="white" font-family="sans-serif" font-size="15">Created with Autopilot · verify the receipt</text><text x="18" y="52" fill="#c1e9f7" font-family="monospace" font-size="12">${marker}</text></svg>\n`);
     result={marker,output:opts.output||'autopilot-badge.svg'};
-  } else throw Error('Commands: setup, key, seal, seal-repo, verify, verify-repo, badge. See README for options.');
+  } else throw Error('Commands: help, setup, makecommand, run, frc, key, seal, seal-repo, verify, verify-repo, badge. See README for options.');
   console.log(JSON.stringify(result,null,2));
   if(['invalid','mismatch'].includes(result.status)) process.exitCode=1;
   return result;
