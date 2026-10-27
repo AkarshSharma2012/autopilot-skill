@@ -51,3 +51,10 @@ test('frc routing reports missing dependency instead of pretending CAD is connec
   assert.equal(JSON.parse(result.stdout).status, 'missing-skill');
   assert.equal(JSON.parse(result.stdout).connected, false);
 });
+
+test('rejects a definition that its own byte-limited reader could not open', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'ap-command-unicode-'));
+  const result = run('makecommand', '--project', root, '--name', 'large', '--purpose', '研'.repeat(12000));
+  assert.notEqual(result.status, 0);
+  assert.deepEqual(await readdir(root), []);
+});
